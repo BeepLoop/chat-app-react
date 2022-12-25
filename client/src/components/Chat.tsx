@@ -20,7 +20,7 @@ function Chat({ keys }: any) {
     const [messages, setMessages] = useState<any[]>([])
     const [members, setMembers] = useState<any[]>([])
     const viewport = useRef(null)
-    const socket = io('http://localhost:3000')
+    const socket = io('https://chat-app-backend-9ub7.onrender.com')
     const location = useLocation()
     const navigate = useNavigate()
 
