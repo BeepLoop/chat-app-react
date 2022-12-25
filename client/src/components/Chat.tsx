@@ -19,7 +19,7 @@ import * as CryptoJS from 'crypto-js'
 function Chat({ keys }: any) {
     const [messages, setMessages] = useState<any[]>([])
     const [members, setMembers] = useState<any[]>([])
-    const viewport = useRef<HTMLDivElement>(null)
+    const viewport = useRef(null)
     const socket = io('http://localhost:3000')
     const location = useLocation()
     const navigate = useNavigate()
