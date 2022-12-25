@@ -21,7 +21,9 @@ function JoinChat({ userInfo, contacts }: any) {
     })
 
     async function chatcodeExists(value: any) {
-        const response = await fetch(`http://localhost:3000/chatcode/${value}`)
+        const response = await fetch(
+            `https://chat-app-backend-9ub7.onrender.com/chatcode/${value}`
+        )
         const parsed = await response.json()
         if (parsed.success === true) {
             return parsed.exists

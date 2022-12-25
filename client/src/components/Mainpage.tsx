@@ -27,7 +27,9 @@ function Mainpage({ userInfo }: any) {
             setContactError(true)
             return
         } else {
-            fetch(`http://localhost:3000/addContact/${values.phone}`)
+            fetch(
+                `https://chat-app-backend-9ub7.onrender.com/addContact/${values.phone}`
+            )
                 .then((res) => res.json())
                 .then((data) => {
                     console.log({ data })
