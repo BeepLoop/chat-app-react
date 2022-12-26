@@ -1,3 +1,4 @@
+import { LoadingOverlay } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Chat from './components/Chat'
@@ -12,6 +13,7 @@ type Tuserinfo = {
 function App() {
     const [userInfo, setUserInfo] = useState<Tuserinfo>()
     const [serverKeys, setServerKeys] = useState<any>()
+    const [gettingKeys, setGettingKeys] = useState(false)
 
     useEffect(() => {
         getServerKeys()
@@ -38,16 +40,19 @@ function App() {
     }
 
     async function getServerKeys() {
+        setGettingKeys(true)
         const response = await fetch(
             'https://chat-app-backend-9ub7.onrender.com/serverKeys'
         )
         const serverKeys = await response.json()
         setServerKeys(serverKeys)
+        setGettingKeys(false)
         console.log('retrieved server keys')
     }
 
     return (
         <div className="App">
+            <LoadingOverlay visible={gettingKeys} />
             <BrowserRouter>
                 <Routes>
                     <Route

@@ -16,7 +16,11 @@ const g = BigInt(4332)
 const io = new Server(server, {
     cors: {
         // origin: 'http://localhost:5173',
-        origin: 'https://transcendent-piroshki-aabaf5.netlify.app/chat',
+        origin: [
+            'http://localhost:5173',
+            'https://transcendent-piroshki-aabaf5.netlify.app/chat',
+            'https://transcendent-piroshki-aabaf5.netlify.app/',
+        ],
         methods: ['POST', 'GET'],
     },
 })
