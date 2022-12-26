@@ -32,6 +32,8 @@ user.chatCodeExists = (chatcode) => {
         console.log({ chatcode })
         const chat = users.find((user) => user.chatcode === chatcode)
         console.log({ chat })
+        const chatMembers = users.getMembers(chatcode)
+        if (chatMembers.length > 2) return { success: false, exists: false }
         if (!chat) return { success: true, exists: false }
         return { success: true, exists: true }
     } catch (err) {
