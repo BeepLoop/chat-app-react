@@ -11,6 +11,10 @@ Web-based chat application in NodeJS using ReactJS with Vite as build tool and [
 *   TypeScript (Front-end only. Backend still uses vanilla JavaScript)
 *   Socket.io
 
+## Note
+You can check the deployed version [here](https://chat-app-e2ee.netlify.app)
+> This is just a working prototype, so bugs are everywhere. Improvements should be added in the future.
+
 ## To do
 *   Improve application logic
 *   Error handling on other parts
