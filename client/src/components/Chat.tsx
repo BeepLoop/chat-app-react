@@ -189,9 +189,10 @@ function Chat({ keys }: any) {
                     </Group>
                 </Flex>
                 <ScrollArea
-                    style={{ height: '70vh', border: '1px solid lightgray' }}
+                    style={{ height: '50vh', border: '1px solid lightgray' }}
                     p="sm"
                     viewportRef={viewport}
+                    type="always"
                 >
                     {messages.map((message, index) => {
                         return (
