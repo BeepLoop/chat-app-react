@@ -1,4 +1,4 @@
-# chat-app-react
+# React Chat-app with E2EE
 
 ## Description
 Web-based End-to-End Encrypted chat application in NodeJS using ReactJS with Vite as build tool and [Socket.io](https://socket.io/).
