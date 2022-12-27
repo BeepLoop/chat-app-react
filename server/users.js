@@ -33,7 +33,10 @@ user.chatCodeExists = (chatcode) => {
         const chat = users.find((user) => user.chatcode === chatcode)
         console.log({ chat })
 
-        const chatMembers = users.getMembers(chatcode)
+        const chatMembers = users.filter((user) => {
+            user.chatcode === chatcode
+        })
+
         console.log({ chatMembers })
 
         if (!chat)
