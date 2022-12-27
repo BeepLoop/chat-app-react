@@ -34,14 +34,7 @@ user.chatCodeExists = (chatcode) => {
         console.log({ chat })
 
         const chatMembers = users.getMembers(chatcode)
-        if (chatMembers.length > 2) {
-            console.log('number of members in the chat: ', chatMembers.length)
-            // return {
-            //     success: false,
-            //     exists: false,
-            //     errorMessage: 'Chat room is full',
-            // }
-        }
+        console.log({ chatMembers })
 
         if (!chat)
             return {
