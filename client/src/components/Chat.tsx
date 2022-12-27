@@ -45,16 +45,16 @@ function Chat({ keys }: any) {
     }, [])
 
     useEffect(() => {
-        receiveSystemNotif()
+        // receiveSystemNotif()
     }, [socket])
 
-    function receiveSystemNotif() {
-        socket.on('notif', (message) => {
-            console.log(message)
-            setMessages((prevMessages) => [...prevMessages, message])
-            scrollToBottom()
-        })
-    }
+    // function receiveSystemNotif() {
+    // }
+    socket.on('notif', (message) => {
+        console.log(message)
+        setMessages((prevMessages) => [...prevMessages, message])
+        scrollToBottom()
+    })
 
     socket.on('members', (data) => {
         setMembers([])
