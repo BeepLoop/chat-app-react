@@ -30,6 +30,7 @@ function JoinChat({ userInfo, contacts }: any) {
         )
         const parsed = await response.json()
         setCheckingCode(false)
+        console.log('parsed: ', parsed)
         if (parsed.success === true) {
             return parsed.exists
         } else {
