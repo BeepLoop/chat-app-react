@@ -1,7 +1,8 @@
-# chat-app-react
+# React Chat-app with E2EE
 
 ## Description
-Web-based chat application in NodeJS using ReactJS with Vite as build tool and [Socket.io](https://socket.io/)
+Web-based End-to-End Encrypted chat application in NodeJS using ReactJS with Vite as build tool and [Socket.io](https://socket.io/).
+This uses [Diffie-Hellman Key Exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) for secure exchange of keys and [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) for encrypting messages.
 
 ## Tech used
 *   NodeJS v18.12.1 (It should still work with other versions of node)
@@ -10,6 +11,10 @@ Web-based chat application in NodeJS using ReactJS with Vite as build tool and [
 *   Mantine
 *   TypeScript (Front-end only. Backend still uses vanilla JavaScript)
 *   Socket.io
+
+## Note
+You can check the deployed version [here](https://chat-app-e2ee.netlify.app)
+> This is just a working prototype, so bugs are everywhere. Improvements should be added in the future.
 
 ## To do
 *   Improve application logic
