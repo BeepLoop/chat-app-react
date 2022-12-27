@@ -1,9 +1,9 @@
 import {
-    Autocomplete,
     Button,
     Flex,
+    LoadingOverlay,
     Modal,
-    Text,
+    Notification,
     TextInput,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
@@ -12,6 +12,9 @@ import { useNavigate } from 'react-router-dom'
 
 function JoinChat({ userInfo, contacts }: any) {
     const [opened, setOpened] = useState(false)
+    const [checkingCode, setCheckingCode] = useState(false)
+    const [codeError, setCodeError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('An error occurred')
     const navigate = useNavigate()
 
     const form = useForm({
@@ -21,13 +24,17 @@ function JoinChat({ userInfo, contacts }: any) {
     })
 
     async function chatcodeExists(value: any) {
+        setCheckingCode(true)
         const response = await fetch(
             `https://chat-app-backend-9ub7.onrender.com/chatcode/${value}`
         )
         const parsed = await response.json()
+        setCheckingCode(false)
         if (parsed.success === true) {
             return parsed.exists
         } else {
+            setErrorMessage(parsed.errorMessage)
+            setCodeError(true)
             return false
         }
     }
@@ -40,6 +47,17 @@ function JoinChat({ userInfo, contacts }: any) {
                     title="Start Conversing"
                     onClose={() => setOpened(false)}
                 >
+                    <LoadingOverlay visible={checkingCode} />
+                    {codeError ? (
+                        <Notification
+                            color="red"
+                            title="Error joining the chat"
+                            onClose={() => setCodeError(false)}
+                        >
+                            {errorMessage}
+                        </Notification>
+                    ) : null}
+
                     <form
                         onSubmit={form.onSubmit(async (values) => {
                             console.log('checking chatcode')
