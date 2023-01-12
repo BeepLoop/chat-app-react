@@ -21,22 +21,7 @@ function App() {
 
     async function setUser(user: any) {
         console.log('setting user: ', user);
-        const response = await fetch(
-            'https://chat-app-backend-9ub7.onrender.com/addContact',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    username: user.username,
-                    publicKey: user.publicKey,
-                    privateKey: user.privateKey,
-                }),
-            }
-        );
-        const parsed = await response.json();
-        setUserInfo(parsed);
+        setUserInfo(user);
     }
 
     async function getServerKeys() {
