@@ -1,26 +1,26 @@
-import { LoadingOverlay } from '@mantine/core'
-import { useEffect, useState } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Chat from './components/Chat'
-import Login from './components/Login'
-import Mainpage from './components/Mainpage'
+import { LoadingOverlay } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Chat from './components/Chat';
+import Login from './components/Login';
+import Mainpage from './components/Mainpage';
 
 type Tuserinfo = {
-    username: string
-    publicKey: string
-}
+    username: string;
+    publicKey: string;
+};
 
 function App() {
-    const [userInfo, setUserInfo] = useState<Tuserinfo>()
-    const [serverKeys, setServerKeys] = useState<any>()
-    const [gettingKeys, setGettingKeys] = useState(false)
+    const [userInfo, setUserInfo] = useState<Tuserinfo>();
+    const [serverKeys, setServerKeys] = useState<any>();
+    const [gettingKeys, setGettingKeys] = useState(false);
 
     useEffect(() => {
-        getServerKeys()
-    }, [])
+        getServerKeys();
+    }, []);
 
     async function setUser(user: any) {
-        console.log('setting user: ', user)
+        console.log('setting user: ', user);
         const response = await fetch(
             'https://chat-app-backend-9ub7.onrender.com/addContact',
             {
@@ -34,20 +34,20 @@ function App() {
                     privateKey: user.privateKey,
                 }),
             }
-        )
-        const parsed = await response.json()
-        setUserInfo(parsed)
+        );
+        const parsed = await response.json();
+        setUserInfo(parsed);
     }
 
     async function getServerKeys() {
-        setGettingKeys(true)
+        setGettingKeys(true);
         const response = await fetch(
             'https://chat-app-backend-9ub7.onrender.com/serverKeys'
-        )
-        const serverKeys = await response.json()
-        setServerKeys(serverKeys)
-        setGettingKeys(false)
-        console.log('retrieved server keys')
+        );
+        const serverKeys = await response.json();
+        setServerKeys(serverKeys);
+        setGettingKeys(false);
+        console.log('retrieved server keys');
     }
 
     return (
@@ -61,15 +61,21 @@ function App() {
                             userInfo ? (
                                 <Mainpage userInfo={userInfo} />
                             ) : (
-                                <Login setUser={setUser} />
+                                <Login
+                                    setUser={setUser}
+                                    serverKeys={serverKeys}
+                                />
                             )
                         }
                     />
-                    <Route path="/chat" element={<Chat keys={serverKeys} />} />
+                    <Route
+                        path="/chat"
+                        element={<Chat keys={serverKeys} />}
+                    />
                 </Routes>
             </BrowserRouter>
         </div>
-    )
+    );
 }
 
-export default App
+export default App;

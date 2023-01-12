@@ -5,44 +5,47 @@ import {
     Modal,
     Notification,
     TextInput,
-} from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function JoinChat({ userInfo, contacts }: any) {
-    const [opened, setOpened] = useState(false)
-    const [checkingCode, setCheckingCode] = useState(false)
-    const [codeError, setCodeError] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('An error occurred')
-    const navigate = useNavigate()
+function JoinChat({ userInfo }: any) {
+    const [opened, setOpened] = useState(false);
+    const [checkingCode, setCheckingCode] = useState(false);
+    const [codeError, setCodeError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('An error occurred');
+    const navigate = useNavigate();
 
     const form = useForm({
         initialValues: {
             chatcode: '',
         },
-    })
+    });
 
     async function chatcodeExists(value: any) {
-        setCheckingCode(true)
+        setCheckingCode(true);
         const response = await fetch(
             `https://chat-app-backend-9ub7.onrender.com/chatcode/${value}`
-        )
-        const parsed = await response.json()
-        setCheckingCode(false)
-        console.log('parsed: ', parsed)
+        );
+        const parsed = await response.json();
+        setCheckingCode(false);
+        console.log('parsed: ', parsed);
         if (parsed.success === true) {
-            return parsed.exists
+            return parsed.exists;
         } else {
-            setErrorMessage(parsed.errorMessage)
-            setCodeError(true)
-            return false
+            setErrorMessage(parsed.errorMessage);
+            setCodeError(true);
+            return false;
         }
     }
 
     return (
         <div>
-            <Flex justify="end" my="sm">
+            <Flex
+                justify="end"
+                my="sm"
+            >
                 <Modal
                     opened={opened}
                     title="Start Conversing"
@@ -61,14 +64,14 @@ function JoinChat({ userInfo, contacts }: any) {
 
                     <form
                         onSubmit={form.onSubmit(async (values) => {
-                            console.log('checking chatcode')
+                            console.log('checking chatcode');
                             if (await chatcodeExists(values.chatcode)) {
                                 navigate('/chat', {
                                     state: {
                                         user: userInfo,
                                         chatcode: values.chatcode,
                                     },
-                                })
+                                });
                             }
                         })}
                     >
@@ -84,7 +87,7 @@ function JoinChat({ userInfo, contacts }: any) {
                 <Button onClick={() => setOpened(true)}>Join Chat</Button>
             </Flex>
         </div>
-    )
+    );
 }
 
-export default JoinChat
+export default JoinChat;

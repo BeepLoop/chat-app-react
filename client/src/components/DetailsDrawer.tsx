@@ -1,8 +1,15 @@
-import { Button, CopyButton, Divider, Drawer, Group, Text } from '@mantine/core'
-import { useState } from 'react'
+import {
+    Button,
+    CopyButton,
+    Divider,
+    Drawer,
+    Group,
+    Text,
+} from '@mantine/core';
+import { useState } from 'react';
 
 function DetailsDrawer({ userInfo }: any) {
-    const [opened, setOpened] = useState(false)
+    const [opened, setOpened] = useState(false);
 
     return (
         <div>
@@ -14,9 +21,15 @@ function DetailsDrawer({ userInfo }: any) {
                 size="lg"
             >
                 <Divider />
-                <Group grow m="sm">
+                <Group
+                    grow
+                    m="sm"
+                >
                     <Text>{userInfo.username}</Text>
-                    <CopyButton value={userInfo.username} timeout={2000}>
+                    <CopyButton
+                        value={userInfo.username}
+                        timeout={2000}
+                    >
                         {({ copied, copy }) => (
                             <Button
                                 color={copied ? 'teal' : 'blue'}
@@ -27,9 +40,15 @@ function DetailsDrawer({ userInfo }: any) {
                         )}
                     </CopyButton>
                 </Group>
-                <Group grow m="sm">
+                <Group
+                    grow
+                    m="sm"
+                >
                     <Text>{userInfo.publicKey}</Text>
-                    <CopyButton value={userInfo.publicKey} timeout={2000}>
+                    <CopyButton
+                        value={userInfo.publicKey}
+                        timeout={2000}
+                    >
                         {({ copied, copy }) => (
                             <Button
                                 color={copied ? 'teal' : 'blue'}
@@ -41,11 +60,14 @@ function DetailsDrawer({ userInfo }: any) {
                     </CopyButton>
                 </Group>
             </Drawer>
-            <Button variant="outline" onClick={() => setOpened(true)}>
+            <Button
+                variant="outline"
+                onClick={() => setOpened(true)}
+            >
                 My Details
             </Button>
         </div>
-    )
+    );
 }
 
-export default DetailsDrawer
+export default DetailsDrawer;

@@ -1,5 +1,4 @@
 import {
-    Anchor,
     Text,
     Button,
     Container,
@@ -8,18 +7,18 @@ import {
     Textarea,
     Group,
     CopyButton,
-} from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { useEffect, useState, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { io } from 'socket.io-client'
-import DetailsDrawer from './DetailsDrawer'
-import * as CryptoJS from 'crypto-js'
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useEffect, useState, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import DetailsDrawer from './DetailsDrawer';
+import { encryptMessage, decryptMessage } from '../utils/encryptor';
+import { io } from 'socket.io-client';
 
 function Chat({ keys }: any) {
-    const [messages, setMessages] = useState<any[]>([])
-    const [members, setMembers] = useState<any[]>([])
-    const viewport = useRef<HTMLDivElement>(null)
+    const [messages, setMessages] = useState<any[]>([]);
+    const [members, setMembers] = useState<any[]>([]);
+    const viewport = useRef<HTMLDivElement>(null);
     const socket = io('https://chat-app-backend-9ub7.onrender.com', {
         reconnectionDelay: 1000,
         reconnection: true,
@@ -27,58 +26,55 @@ function Chat({ keys }: any) {
         agent: false,
         upgrade: false,
         rejectUnauthorized: false,
-    })
-    const location = useLocation()
-    const navigate = useNavigate()
+    });
+    const form = useForm({
+        initialValues: {
+            message: '',
+        },
+    });
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const chatcode = location.state.chatcode
-    const username = location.state.user.username
-    const userPublicKey = location.state.user.publicKey
-    const userPrivateKey = location.state.user.privateKey
+    const chatcode = location.state.chatcode;
+    const username = location.state.user.username;
+    const userPublicKey = location.state.user.publicKey;
+    const userPrivateKey = location.state.user.privateKey;
 
     useEffect(() => {
         socket.emit('joinChat', {
             username: username,
             chatcode: chatcode,
             publicKey: userPublicKey,
-        })
-    }, [])
+        });
+    }, []);
 
-    useEffect(() => {
-        // receiveSystemNotif()
-    }, [socket])
-
-    // function receiveSystemNotif() {
-    // }
     socket.on('notif', (message) => {
-        console.log(message)
-        setMessages((prevMessages) => [...prevMessages, message])
-        scrollToBottom()
-    })
+        console.log(message);
+        setMessages((prevMessages) => [...prevMessages, message]);
+        scrollToBottom();
+    });
 
     socket.on('members', (data) => {
-        setMembers([])
+        setMembers([]);
         data.members.map((member: any) => {
-            setMembers((prevMembers) => [...prevMembers, member])
-        })
-        console.log({ members })
-    })
+            setMembers((prevMembers) => [...prevMembers, member]);
+        });
+        console.log({ members });
+    });
 
     socket.on('privateMessage', (privateMessage) => {
         if (privateMessage.sender !== username) {
-            const senderPublicKey = privateMessage.senderPublicKey
+            const senderPublicKey = privateMessage.senderPublicKey;
 
-            const sharedSecret =
-                BigInt(senderPublicKey) ** BigInt(userPrivateKey) %
-                BigInt(keys.P)
+            const decrypted = decryptMessage({
+                senderPublicKey: senderPublicKey,
+                userPrivateKey: userPrivateKey,
+                prime: keys.P,
+                encryptedText: privateMessage.message,
+            });
 
-            const decrypted = decryptMessage(
-                sharedSecret,
-                privateMessage.message
-            ).toString()
-
-            console.log('encrypted message received: ', privateMessage.message)
-            console.log('decrypted message: ', decrypted)
+            console.log('encrypted message received: ', privateMessage.message);
+            console.log('decrypted message: ', decrypted);
 
             setMessages((prevMessages) => [
                 ...prevMessages,
@@ -88,43 +84,31 @@ function Chat({ keys }: any) {
                     sender: privateMessage.sender,
                     message: decrypted,
                 },
-            ])
-            scrollToBottom()
+            ]);
+            scrollToBottom();
         }
-    })
-
-    const form = useForm({
-        initialValues: {
-            message: '',
-        },
-    })
-
-    function leaveChat() {
-        socket.emit('leave', { username: username, chatcode: chatcode })
-    }
+    });
 
     function sendMessage(values: any) {
         const recipient = members.filter(
             (member) => member.username !== username
-        )
+        );
 
-        const sharedSecret =
-            BigInt(recipient[0].publicKey) ** BigInt(userPrivateKey) %
-            BigInt(keys.P)
+        const encrypted = encryptMessage({
+            recipientPublicKey: recipient[0].publicKey,
+            userPrivateKey: userPrivateKey,
+            prime: keys.P,
+            message: values.message,
+        });
 
-        const encrypted = encryptMessage(
-            sharedSecret,
-            values.message
-        ).toString()
-
-        console.log('original message: ', values.message)
-        console.log('encrypted message: ', encrypted)
+        console.log('original message: ', values.message);
+        console.log('encrypted message: ', encrypted);
 
         socket.emit('privateMessage', {
             chatcode: chatcode,
             sender: username,
             message: encrypted,
-        })
+        });
 
         setMessages((prevMessages) => [
             ...prevMessages,
@@ -133,49 +117,45 @@ function Chat({ keys }: any) {
                 sender: username,
                 message: values.message,
             },
-        ])
+        ]);
 
-        scrollToBottom()
+        scrollToBottom();
+    }
+
+    function leaveChat() {
+        socket.emit('leave', { username: username, chatcode: chatcode });
     }
 
     function scrollToBottom() {
         viewport.current.scrollTo({
             top: viewport.current.scrollHeight,
             behavior: 'smooth',
-        })
-    }
-
-    function encryptMessage(sharedSecret: any, message: any) {
-        const encrypted = CryptoJS.AES.encrypt(message, sharedSecret.toString())
-        return encrypted
-    }
-
-    function decryptMessage(sharedSecret: any, encryptedMessage: string) {
-        const decrypted = CryptoJS.AES.decrypt(
-            encryptedMessage,
-            sharedSecret.toString()
-        )
-        const decryptedMessage = CryptoJS.enc.Utf8.stringify(decrypted)
-        return decryptedMessage
+        });
     }
 
     return (
         <>
             <Container size="sm">
                 <DetailsDrawer userInfo={location.state.user} />
-                <Flex justify="space-between" align="center" my="sm">
-                    {/* <Anchor href="/">Leave</Anchor> */}
+                <Flex
+                    justify="space-between"
+                    align="center"
+                    my="sm"
+                >
                     <Button
                         onClick={() => {
-                            navigate(-1)
-                            leaveChat()
+                            navigate(-1);
+                            leaveChat();
                         }}
                     >
                         Leave
                     </Button>
                     <Group>
                         <Text>{chatcode}</Text>
-                        <CopyButton value={chatcode} timeout={2000}>
+                        <CopyButton
+                            value={chatcode}
+                            timeout={2000}
+                        >
                             {({ copied, copy }) => (
                                 <Button
                                     color={copied ? 'teal' : 'blue'}
@@ -196,21 +176,28 @@ function Chat({ keys }: any) {
                 >
                     {messages.map((message, index) => {
                         return (
-                            <Flex key={index} my="xs">
+                            <Flex
+                                key={index}
+                                my="xs"
+                            >
                                 <Group p="sm">
                                     <Text fz="sm">{`${message.sender} : ${message.message}`}</Text>
                                 </Group>
                             </Flex>
-                        )
+                        );
                     })}
                 </ScrollArea>
                 <form
                     onSubmit={form.onSubmit((values) => {
-                        sendMessage(values)
-                        form.reset()
+                        sendMessage(values);
+                        form.reset();
                     })}
                 >
-                    <Flex align="center" my="sm" gap="sm">
+                    <Flex
+                        align="center"
+                        my="sm"
+                        gap="sm"
+                    >
                         <Textarea
                             label={
                                 members.length < 2
@@ -232,7 +219,7 @@ function Chat({ keys }: any) {
                 </form>
             </Container>
         </>
-    )
+    );
 }
 
-export default Chat
+export default Chat;

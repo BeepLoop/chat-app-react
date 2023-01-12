@@ -1,20 +1,15 @@
-import { Button, Container, LoadingOverlay, TextInput } from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { useEffect, useState } from 'react'
-import generateKey from '../utils/generateKey'
+import { Button, Container, LoadingOverlay, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useState } from 'react';
+import generateKey from '../utils/generateKey';
 
 type Tkeys = {
-    P: number
-    g: number
-}
+    P: number;
+    g: number;
+};
 
-function Login({ setUser }: any) {
-    const [submitting, setSubmitting] = useState(false)
-    const [keys, setKeys] = useState<Tkeys>({ P: 0, g: 0 })
-
-    useEffect(() => {
-        getServerKeys()
-    }, [])
+function Login({ setUser, serverKeys }: any) {
+    const [submitting, setSubmitting] = useState(false);
 
     const form = useForm({
         initialValues: {
@@ -24,24 +19,16 @@ function Login({ setUser }: any) {
             username: (value) =>
                 value.length < 1 ? 'Enter a valid username' : null,
         },
-    })
-
-    async function getServerKeys() {
-        const response = await fetch(
-            'https://chat-app-backend-9ub7.onrender.com/serverKeys'
-        )
-        const serverKeys = await response.json()
-        setKeys(serverKeys)
-    }
+    });
 
     function login(value: any) {
-        setSubmitting(true)
-        const userKeys = generateKey(keys.P, keys.g)
+        setSubmitting(true);
+        const userKeys = generateKey(serverKeys.P, serverKeys.g);
         setUser({
             username: value.username,
             publicKey: userKeys.public.toString(),
             privateKey: userKeys.private.toString(),
-        })
+        });
     }
 
     return (
@@ -49,7 +36,7 @@ function Login({ setUser }: any) {
             <LoadingOverlay visible={submitting} />
             <form
                 onSubmit={form.onSubmit((values) => {
-                    login(values)
+                    login(values);
                 })}
             >
                 <Container
@@ -68,7 +55,7 @@ function Login({ setUser }: any) {
                 </Container>
             </form>
         </div>
-    )
+    );
 }
 
-export default Login
+export default Login;
