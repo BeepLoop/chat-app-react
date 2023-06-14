@@ -26,7 +26,7 @@ function JoinChat({ userInfo }: any) {
     async function chatcodeExists(value: any) {
         setCheckingCode(true);
         const response = await fetch(
-            `https://chat-app-backend-9ub7.onrender.com/chatcode/${value}`
+            `https://chat-e2ee-backend.onrender.com/chatcode/${value}`
         );
         const parsed = await response.json();
         setCheckingCode(false);
