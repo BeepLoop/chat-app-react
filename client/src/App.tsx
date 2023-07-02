@@ -26,9 +26,7 @@ function App() {
 
     async function getServerKeys() {
         setGettingKeys(true);
-        const response = await fetch(
-            'https://chat-app-backend-9ub7.onrender.com/serverKeys'
-        );
+        const response = await fetch('http://localhost:3000/serverKeys');
         const serverKeys = await response.json();
         setServerKeys(serverKeys);
         setGettingKeys(false);

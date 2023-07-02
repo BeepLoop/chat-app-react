@@ -1,25 +1,25 @@
 import {
-    Text,
     Button,
     Container,
-    Flex,
-    ScrollArea,
-    Textarea,
-    Group,
     CopyButton,
+    Flex,
+    Group,
+    ScrollArea,
+    Text,
+    Textarea,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import DetailsDrawer from './DetailsDrawer';
-import { encryptMessage, decryptMessage } from '../utils/encryptor';
 import { io } from 'socket.io-client';
+import { decryptMessage, encryptMessage } from '../utils/encryptor';
+import DetailsDrawer from './DetailsDrawer';
 
 function Chat({ keys }: any) {
     const [messages, setMessages] = useState<any[]>([]);
     const [members, setMembers] = useState<any[]>([]);
     const viewport = useRef<HTMLDivElement>(null);
-    const socket = io('https://chat-app-backend-9ub7.onrender.com', {
+    const socket = io('http://localhost:3000', {
         reconnectionDelay: 1000,
         reconnection: true,
         transports: ['websocket'],
@@ -85,7 +85,7 @@ function Chat({ keys }: any) {
                     message: decrypted,
                 },
             ]);
-            scrollToBottom();
+            // scrollToBottom();
         }
     });
 
@@ -119,19 +119,19 @@ function Chat({ keys }: any) {
             },
         ]);
 
-        scrollToBottom();
+        // scrollToBottom();
     }
 
     function leaveChat() {
         socket.emit('leave', { username: username, chatcode: chatcode });
     }
 
-    function scrollToBottom() {
-        viewport.current.scrollTo({
-            top: viewport.current.scrollHeight,
-            behavior: 'smooth',
-        });
-    }
+    // function scrollToBottom() {
+    //     viewport.current.scrollTo({
+    //         top: viewport.current.scrollHeight,
+    //         behavior: 'smooth',
+    //     });
+    // }
 
     return (
         <>

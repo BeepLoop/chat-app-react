@@ -18,6 +18,7 @@ const io = new Server(server, {
         // origin: 'http://localhost:5173',
         origin: [
             'http://localhost:5173',
+            'http://localhost:5173/chat',
             'https://transcendent-piroshki-aabaf5.netlify.app/chat',
             'https://transcendent-piroshki-aabaf5.netlify.app/',
         ],
